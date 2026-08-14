@@ -1,0 +1,1 @@
+nanti liat di command prompt (window yang background warna item trs ad text gitu) disitu ada 2 ip address (yang 127.0.0.1:5000 sama satu lagi yang ini random), yang random itu yang dikasih ke orang lain yang di jaringan wifi sama biar mrk bs pake jg

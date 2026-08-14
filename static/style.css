@@ -1,0 +1,563 @@
+:root {
+  --bg: #0f1115;
+  --panel: #171a21;
+  --border: #2a2e38;
+  --text: #e8e9ec;
+  --muted: #9aa0ac;
+  --accent: #4f8cff;
+  --accent-2: #00e676;
+  --danger: #ff3b3b;
+  --warning: #f5a623;
+  --radius: 10px;
+  --sidebar-width: 230px;
+  --font-scale: 1;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  font-size: calc(clamp(14px, 0.85vw + 11px, 18px) * var(--font-scale));
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+/* ===== Layout: sidebar + main ===== */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  flex-shrink: 0;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  padding: clamp(12px, 1.5vw, 20px) clamp(16px, 3vw, 28px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.sidebar-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0 8px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: white;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.92rem;
+}
+
+.nav-icon {
+  width: 18px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.main-content {
+  flex: 1;
+  width: 100%;
+  max-width: none;
+  padding: clamp(24px, 4vw, 56px) clamp(20px, 5vw, 64px) clamp(40px, 6vw, 96px);
+}
+
+.font-control-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.font-control-btn {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  min-width: 52px;
+  flex-shrink: 0;
+  zoom: 1;
+}
+
+.font-control-btn:hover {
+  border-color: var(--accent);
+}
+
+.font-control-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.view { display: none; }
+.view.active { display: block; }
+
+header h1 {
+  font-size: 1.9rem;
+  margin: 0 0 6px;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin: 0 0 32px;
+}
+
+.subtitle.small {
+  font-size: 0.88rem;
+  margin: 0 0 16px;
+}
+
+/* ===== Upload form ===== */
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.drop-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.drop-zone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 32px 16px;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--panel);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  text-align: center;
+}
+
+.drop-zone:hover {
+  border-color: var(--accent);
+}
+
+.drop-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.drop-label {
+  font-weight: 600;
+}
+
+.file-name {
+  font-size: 0.85rem;
+  color: var(--muted);
+  word-break: break-all;
+}
+
+button#compareBtn,
+.primary-btn {
+  align-self: flex-start;
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+button#compareBtn:hover,
+.primary-btn:hover { filter: brightness(1.1); }
+button#compareBtn:disabled,
+.primary-btn:disabled { opacity: 0.6; cursor: default; }
+
+.status {
+  margin-top: 20px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.status.error { color: var(--danger); }
+
+.results {
+  margin-top: 32px;
+}
+
+.template-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  border: 1px solid var(--border);
+}
+
+.template-badge.active {
+  background: rgba(79, 140, 255, 0.12);
+  border-color: rgba(79, 140, 255, 0.5);
+  color: var(--text);
+}
+
+.template-badge.inactive {
+  background: var(--panel);
+  color: var(--muted);
+}
+
+.template-badge-icon {
+  font-size: 1rem;
+}
+
+.summary {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+}
+
+.summary b { color: var(--accent-2); }
+
+.no-diff {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent-2);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* ===== Filter / selector bars ===== */
+
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  padding: 14px 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-field label {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.filter-field select {
+  background: #1d212b;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.88rem;
+  min-width: 160px;
+  cursor: pointer;
+}
+
+/* ===== Sheet tabs (Excel-style) ===== */
+
+.sheet-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
+}
+
+.sheet-tab {
+  background: var(--panel);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  transform: translateY(1px);
+}
+
+.sheet-tab:hover {
+  color: var(--text);
+}
+
+.sheet-tab.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.sheet-tab.warn {
+  color: var(--warning);
+}
+
+.sheet-tab.warn.active {
+  background: var(--warning);
+  color: #201a05;
+  border-color: var(--warning);
+}
+
+/* ===== Grid controls + legend ===== */
+
+.grid-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox-label input { cursor: pointer; }
+
+.legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.legend-swatch.same { background: rgba(0, 230, 118, 0.55); border: 1px solid var(--accent-2); }
+.legend-swatch.diff { background: rgba(255, 59, 59, 0.55); border: 1px solid var(--danger); }
+.legend-swatch.missing { background: rgba(245, 166, 35, 0.4); border: 1px solid var(--warning); }
+
+/* ===== Excel-style grid ===== */
+
+.excel-grid-wrapper {
+  overflow: auto;
+  max-height: calc(100vh - 300px);
+  min-height: 320px;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+
+table.excel-grid {
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.82rem;
+  width: max-content;
+  min-width: 100%;
+}
+
+table.excel-grid thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: #1d212b;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+table.excel-grid thead th.corner-header {
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  background: #232733;
+  color: var(--text);
+  font-weight: 700;
+}
+
+table.excel-grid tbody th.row-header {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #1d212b;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: left;
+  padding: 8px 12px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+table.excel-grid tbody td {
+  padding: 6px 10px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+table.excel-grid.hide-equal-rows tbody tr[data-hasdiff="0"] {
+  display: none;
+}
+
+.excel-cell.same {
+  background: rgba(0, 230, 118, 0.28);
+  color: var(--text);
+}
+
+.excel-cell.empty {
+  background: transparent;
+  color: var(--muted);
+}
+
+.excel-cell.diff {
+  background: rgba(255, 59, 59, 0.26);
+}
+
+.excel-cell.missing {
+  background: rgba(245, 166, 35, 0.16);
+}
+
+.excel-cell.empty-vs-value {
+  background: rgba(255, 215, 0, 0.26);
+  border-color: #e1b000;
+}
+
+.val-choice {
+  display: block;
+  padding: 3px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 2px;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.val-choice:last-child { margin-bottom: 0; }
+
+.val-choice:hover {
+  background: rgba(79, 140, 255, 0.14);
+}
+
+.val-choice.selected {
+  background: rgba(79, 140, 255, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(79, 140, 255, 0.8);
+  color: var(--text);
+}
+
+.val-choice.disabled {
+  cursor: default;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.val-choice.disabled:hover {
+  background: transparent;
+}
+
+.sheet-only-message {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--muted);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+}
+
+/* ===== Merge section ===== */
+
+.merge-section {
+  margin-top: 12px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.merge-section h2 {
+  font-size: 1.2rem;
+  margin: 0 0 6px;
+}
+
+.merge-bulk-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.bulk-btn {
+  background: #1d212b;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.bulk-btn:hover {
+  border-color: var(--accent);
+}
