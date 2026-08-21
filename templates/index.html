@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Toolkit Excel</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=20260810-2">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=20260821-1">
 </head>
 <body>
   <div class="app-shell">
@@ -12,7 +12,7 @@
       <div class="sidebar-title">Toolkit</div>
       <nav class="sidebar-nav">
         <div class="nav-item active">
-          <span class="nav-icon">⇄</span> Bandingkan Excel
+          <span class="nav-icon">🧹</span> Bersihkan Ledger
         </div>
       </nav>
       <div class="font-control-toolbar" aria-label="Pengaturan ukuran teks">
@@ -24,103 +24,67 @@
 
     <main class="main-content">
 
-      <!-- ============ VIEW: BANDINGKAN EXCEL ============ -->
-      <section id="view-compare" class="view active">
+      <!-- ============ VIEW: BERSIHKAN LEDGER ============ -->
+      <section id="view-clean" class="view active">
         <header>
-          <h1>Pembanding File Excel</h1>
-          <p class="subtitle">Unggah <b>File 1</b> dan <b>File 2</b>. Sistem akan membandingkan keduanya dua arah: File 1 → File 2 dan File 2 → File 1, sehingga setiap sisi bisa dicek dari perspektif lawannya. Jika Anda punya template/skeleton, unggah di kotak <b>Template / Skeleton</b>; bila tidak ada, sistem akan mencoba mengenali template dari isi file secara otomatis. Perbandingan dan tampilan tabel akan mengikuti <b>header kolom</b> dan <b>header baris (kolom A)</b> dari skeleton/template yang dipakai, atau dari header umum yang terdeteksi dari file unggahan bila tidak ada skeleton.</p>
+          <h1>Pembersih Ledger Excel</h1>
+          <p class="subtitle">Unggah file laporan (mis. "Rincian Buku Besar") yang berisi header/footer berulang di
+            setiap halaman. Sistem akan menyisakan hanya baris transaksi asli, dikenali dari <b>font</b> yang
+            dipakai pada sel kolom <b>Tanggal</b> — baris header, footer, dan judul halaman akan otomatis dibuang.</p>
         </header>
 
-        <form id="compareForm" class="upload-form">
+        <form id="uploadForm" class="upload-form">
           <div class="drop-row">
-            <label class="drop-zone" id="drop1">
-              <input type="file" name="file1" id="file1" accept=".xlsx,.xls" required>
-              <span class="drop-label">File 1</span>
-              <span class="file-name" id="file1Name">Belum ada file dipilih</span>
-            </label>
-            <label class="drop-zone" id="drop2">
-              <input type="file" name="file2" id="file2" accept=".xlsx,.xls" required>
-              <span class="drop-label">File 2</span>
-              <span class="file-name" id="file2Name">Belum ada file dipilih</span>
-            </label>
-            <label class="drop-zone" id="dropTemplate">
-              <input type="file" name="template" id="template" accept=".xlsx,.xls">
-              <span class="drop-label">Template / Skeleton (opsional)</span>
-              <span class="file-name" id="templateName">Kosong — sistem akan memakai template otomatis bila ditemukan</span>
+            <label class="drop-zone" id="dropFile">
+              <input type="file" name="file" id="file" accept=".xlsx,.xls" required>
+              <span class="drop-label">File Excel</span>
+              <span class="file-name" id="fileName">Belum ada file dipilih</span>
             </label>
           </div>
-          <button type="submit" id="compareBtn">Bandingkan File</button>
         </form>
 
-        <div id="status" class="status"></div>
+        <div id="uploadStatus" class="status"></div>
+
+        <div id="settingsSection" class="settings-panel" hidden>
+          <div class="filter-bar">
+            <div class="filter-field">
+              <label for="sheetSelect">Sheet</label>
+              <select id="sheetSelect"></select>
+            </div>
+            <div class="filter-field">
+              <label for="fontNameInput">Nama Font</label>
+              <input type="text" id="fontNameInput" value="Arial">
+            </div>
+            <div class="filter-field">
+              <label for="fontSizeInput">Ukuran Font</label>
+              <input type="number" id="fontSizeInput" value="9" step="0.5" min="1">
+            </div>
+          </div>
+          <p class="subtitle small">Hanya baris di mana sel kolom <b>Tanggal</b> memakai font &amp; ukuran ini yang
+            akan disimpan. Secara default kami memakai Arial ukuran 9, sesuaikan bila laporan Anda berbeda.</p>
+          <button type="button" id="cleanBtn" class="primary-btn">Bersihkan File</button>
+        </div>
+
+        <div id="cleanStatus" class="status"></div>
 
         <div id="resultsSection" class="results" hidden>
-          <div class="template-badge" id="templateBadge" hidden></div>
-
           <div class="summary" id="summary"></div>
 
-          <div class="compare-select-bar filter-bar" id="compareSelectBar" hidden>
-            <div class="filter-field">
-              <label for="compareFileSelect">Arah perbandingan</label>
-              <select id="compareFileSelect"></select>
-            </div>
+          <a id="downloadBtn" class="primary-btn download-btn" href="#" download>⬇ Unduh Excel Hasil Bersih</a>
+
+          <div class="excel-grid-wrapper">
+            <table class="excel-grid" id="excelGrid">
+              <thead><tr id="excelGridHead"></tr></thead>
+              <tbody id="excelGridBody"></tbody>
+            </table>
           </div>
-
-          <div id="noDiffMessage" class="no-diff" hidden>Tidak ada perbedaan yang ditemukan</div>
-
-          <div id="diffContent">
-            <div class="sheet-tabs" id="sheetTabs"></div>
-
-            <div class="grid-controls">
-              <label class="checkbox-label">
-                <input type="checkbox" id="hideEqualRows">
-                Hanya tampilkan baris yang punya perbedaan
-              </label>
-              <div class="legend">
-                <span class="legend-item"><span class="legend-swatch same"></span> Sama</span>
-                <span class="legend-item"><span class="legend-swatch diff"></span> Berbeda</span>
-                <span class="legend-item"><span class="legend-swatch missing"></span> Hanya di salah satu file</span>
-              </div>
-            </div>
-
-            <div class="excel-grid-wrapper">
-              <table class="excel-grid" id="excelGrid">
-                <thead><tr id="excelGridHead"></tr></thead>
-                <tbody id="excelGridBody"></tbody>
-              </table>
-            </div>
-            <div id="sheetOnlyMessage" class="sheet-only-message" hidden></div>
-
-            <div class="merge-section" id="mergeSection">
-              <h2>Gabungkan File</h2>
-              <p class="subtitle small">Klik nilai pada sel berwarna merah/oranye di tabel di atas untuk memilih nilai mana yang dipakai, lalu unduh hasil gabungannya.</p>
-
-              <div class="filter-bar merge-base-bar">
-                <div class="filter-field">
-                  <label for="baseFileSelect">Kerangka File Hasil</label>
-                  <select id="baseFileSelect">
-                    <option value="file1">File 1</option>
-                    <option value="file2">File 2</option>
-                    <option value="template">Template / Skeleton</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="merge-bulk-actions">
-                <button type="button" id="bulkFile1Btn" class="bulk-btn">Pilih Semua Nilai File 1</button>
-                <button type="button" id="bulkFile2Btn" class="bulk-btn">Pilih Semua Nilai File 2</button>
-              </div>
-
-              <button type="button" id="downloadMergeBtn" class="primary-btn">Unduh File Gabungan (.xlsx)</button>
-              <div id="mergeStatus" class="status"></div>
-            </div>
-          </div>
+          <p class="subtitle small" id="previewNote"></p>
         </div>
       </section>
 
     </main>
   </div>
 
-  <script src="{{ url_for('static', filename='script.js') }}?v=20260810-2"></script>
+  <script src="{{ url_for('static', filename='script.js') }}?v=20260821-1"></script>
 </body>
 </html>

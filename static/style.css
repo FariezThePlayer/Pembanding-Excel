@@ -561,3 +561,20 @@ table.excel-grid.hide-equal-rows tbody tr[data-hasdiff="0"] {
 .bulk-btn:hover {
   border-color: var(--accent);
 }
+/* ===== Cleaner-specific additions ===== */
+
+.settings-panel {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.download-btn {
+  display: inline-block;
+  text-decoration: none;
+  margin-bottom: 20px;
+}
+
+table.excel-grid tbody td.excel-cell {
+  white-space: nowrap;
+}
